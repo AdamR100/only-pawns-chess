@@ -1,0 +1,216 @@
+package chess
+
+import kotlin.system.exitProcess
+enum class f(var s: Char = ' ') {
+    a0('.'), a1, a2('W'), a3, a4, a5, a6, a7('B'), a8, a9('.'),
+    b0('.'), b1, b2('W'), b3, b4, b5, b6, b7('B'), b8, b9('.'),
+    c0('.'), c1, c2('W'), c3, c4, c5, c6, c7('B'), c8, c9 ('.'),
+    d0('.'), d1, d2('W'), d3, d4, d5, d6, d7('B'), d8, d9('.'),
+    e0('.'), e1, e2('W'), e3, e4, e5, e6, e7('B'), e8, e9('.'),
+    f0('.'), f1, f2('W'), f3, f4, f5, f6, f7('B'), f8, f9('.'),
+    g0('.'), g1, g2('W'), g3, g4, g5, g6, g7('B'), g8, g9('.'),
+    h0('.'), h1, h2('W'), h3, h4, h5, h6, h7('B'), h8, h9('.'),
+    i0('.'), i1, i2('.'), i3('.'), i4('.'), i5('.'), i6('.'), i7('.'), i8('.'), i9('.')
+}
+fun main() {
+    println("Pawns-Only Chess")
+    println("First Player's name:")
+    val firstPlayerName = readln()
+    println("Second Player's name:")
+    val secondPlayerName = readln()
+    printer()
+    firstPlayer(firstPlayerName, secondPlayerName)
+    exitProcess(1)
+}
+fun printer() {
+    print("""  +---+---+---+---+---+---+---+---+
+8 | ${f.a8.s} | ${f.b8.s} | ${f.c8.s} | ${f.d8.s} | ${f.e8.s} | ${f.f8.s} | ${f.g8.s} | ${f.h8.s} |
+  +---+---+---+---+---+---+---+---+
+7 | ${f.a7.s} | ${f.b7.s} | ${f.c7.s} | ${f.d7.s} | ${f.e7.s} | ${f.f7.s} | ${f.g7.s} | ${f.h7.s} |
+  +---+---+---+---+---+---+---+---+
+6 | ${f.a6.s} | ${f.b6.s} | ${f.c6.s} | ${f.d6.s} | ${f.e6.s} | ${f.f6.s} | ${f.g6.s} | ${f.h6.s} |
+  +---+---+---+---+---+---+---+---+
+5 | ${f.a5.s} | ${f.b5.s} | ${f.c5.s} | ${f.d5.s} | ${f.e5.s} | ${f.f5.s} | ${f.g5.s} | ${f.h5.s} |
+  +---+---+---+---+---+---+---+---+
+4 | ${f.a4.s} | ${f.b4.s} | ${f.c4.s} | ${f.d4.s} | ${f.e4.s} | ${f.f4.s} | ${f.g4.s} | ${f.h4.s} |
+  +---+---+---+---+---+---+---+---+
+3 | ${f.a3.s} | ${f.b3.s} | ${f.c3.s} | ${f.d3.s} | ${f.e3.s} | ${f.f3.s} | ${f.g3.s} | ${f.h3.s} |
+  +---+---+---+---+---+---+---+---+
+2 | ${f.a2.s} | ${f.b2.s} | ${f.c2.s} | ${f.d2.s} | ${f.e2.s} | ${f.f2.s} | ${f.g2.s} | ${f.h2.s} |
+  +---+---+---+---+---+---+---+---+
+1 | ${f.a1.s} | ${f.b1.s} | ${f.c1.s} | ${f.d1.s} | ${f.e1.s} | ${f.f1.s} | ${f.g8.s} | ${f.h8.s} |
+  +---+---+---+---+---+---+---+---+
+    a   b   c   d   e   f   g   h
+""")
+}
+fun winChecker(passant: String, whiteTurn: Boolean): Boolean {
+    for(i in 'a'..'h') {
+        if(f.valueOf("${i}8").s == 'W') {
+            println("White Wins!")
+            println("Bye!")
+            return true
+        }
+        if(f.valueOf("${i}1").s == 'B') {
+            println("Black Wins!")
+            println("Bye!")
+            return true
+        }
+    }
+    var white = 0
+    var black = 0
+    for (i in f.values()) {
+        if(i.s == 'W') white++
+        if(i.s == 'B') black++
+    }
+    if(white == 0) {
+        println("Black Wins!")
+        println("Bye!")
+        return true
+    }
+    if (black == 0) {
+        println("White Wins!")
+        println("Bye!")
+        return true
+    }
+    for (i in f.values()) {
+        if(i.s == 'B' && !whiteTurn) {
+            if(i.name[0] != 'a') {
+                if (f.valueOf(
+                        i.name[0].toString() + (i.name[1].toString().toInt() - 1).toString()
+                    ).s == ' '
+                ) return false
+                if (f.valueOf((i.name[0] - 1).toString() + (i.name[1].toString().toInt() - 1).toString()).s == 'W' ||
+                    f.valueOf((i.name[0] + 1).toString() + (i.name[1].toString().toInt() - 1).toString()).s == 'W'
+                ) return false
+            }
+            else {
+                if (f.valueOf(
+                        i.name[0].toString() + (i.name[1].toString().toInt() - 1).toString()
+                    ).s == ' '
+                ) return false
+                if (f.valueOf((i.name[0] + 1).toString() + (i.name[1].toString().toInt() - 1).toString()).s == 'W'
+                ) return false
+            }
+        }
+        if(i.s == 'W' && whiteTurn)    {
+            if(i.name[0] != 'a') {
+            if(f.valueOf(i.name[0].toString() + (i.name[1].toString().toInt() + 1).toString()).s == ' ') return false
+            if(f.valueOf((i.name[0] - 1).toString() + (i.name[1].toString().toInt() + 1).toString()).s == 'B' ||
+                f.valueOf((i.name[0] + 1).toString() + (i.name[1].toString().toInt() + 1).toString()).s == 'B' ) return false
+            }
+            else {
+                if(f.valueOf(i.name[0].toString() + (i.name[1].toString().toInt() + 1).toString()).s == ' ') return false
+                if(f.valueOf((i.name[0] + 1).toString() + (i.name[1].toString().toInt() + 1).toString()).s == 'B' ) return false
+            }
+        }
+    }
+    if(passant != "") {
+        if(passant[3] == '5') {
+            if ((f.valueOf((passant[2].code + 1).toString() + passant[3].toString()).s == 'W' ||
+                f.valueOf((passant[2].code - 1).toString() + passant[3].toString()).s == 'W') &&
+                f.valueOf(passant[2].toString() + (passant[3].code + 1).toString()).s == ' ') return false
+        }
+        if(passant[3] == '4') {
+            if ((f.valueOf((passant[2].code + 1).toString() + passant[3].toString()).s == 'B' ||
+                f.valueOf((passant[2].code - 1).toString() + passant[3].toString()).s == 'B') &&
+                f.valueOf(passant[2].toString() + (passant[3].code - 1).toString()).s == ' ') return false
+        }
+    }
+    println("Stalemate!")
+    println("Bye!")
+    return true
+}
+fun firstPlayer(firstPlayerName: String, secondPlayerName: String, passant: String = "") {
+    if(winChecker(passant, true)) return
+    val matchTemplate = Regex("[a-h][1-8][a-h][1-8]")
+    println("$firstPlayerName's turn:")
+    val coordinates = readln()
+    val valid = (matchTemplate.matches(coordinates) && coordinates[0] == coordinates[2]) &&
+            ((coordinates[1] == '2' && coordinates[3] == '4') || coordinates[3].code == coordinates[1].code + 1) &&
+            f.valueOf(coordinates[2].toString() + coordinates[3].toString()).s == ' '
+    val capture = matchTemplate.matches(coordinates) && f.valueOf(coordinates[2].toString() + coordinates[3].toString()).s == 'B' &&
+            coordinates[1] + 1 == coordinates[3] && (coordinates[0] + 1 == coordinates[2] || coordinates[0] - 1 == coordinates[2])
+    when {
+        coordinates == "exit" -> {
+            println("Bye!")
+        }
+        matchTemplate.matches(coordinates) && f.valueOf(coordinates[0].toString() + coordinates[1].toString()).s != 'W' -> {
+            println("No white pawn at ${coordinates[0].toString() + coordinates[1].toString()}")
+            firstPlayer(firstPlayerName, secondPlayerName, passant)
+        }
+        capture -> {
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            f.valueOf(coordinates.substring(2, 4)).s = 'W'
+            printer()
+            secondPlayer(firstPlayerName, secondPlayerName)
+        }
+        passant.matches(matchTemplate) && passant[3] == coordinates[3] - 1 && passant[2] == coordinates[2]  &&
+        matchTemplate.matches(coordinates) && f.valueOf(coordinates[2].toString() + (coordinates[3] - 1).toString()).s == 'B' &&
+        coordinates[1] + 1 == coordinates[3] && (coordinates[0] + 1 == coordinates[2] || coordinates[0] - 1 == coordinates[2]) -> {
+            f.valueOf(passant.substring(2, 4)).s = ' '
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            f.valueOf(coordinates.substring(2, 4)).s = 'W'
+            printer()
+            secondPlayer(firstPlayerName, secondPlayerName)
+        }
+        !valid -> {
+            println("Invalid Input")
+            firstPlayer(firstPlayerName, secondPlayerName, passant)
+        }
+        valid && coordinates[1].code < coordinates[3].code -> {
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            f.valueOf(coordinates.substring(2, 4)).s = 'W'
+            printer()
+            if(coordinates[1] == '2' && coordinates[3] == '4') secondPlayer(firstPlayerName, secondPlayerName, coordinates)
+            else secondPlayer(firstPlayerName, secondPlayerName)
+        }
+
+    }
+}
+fun secondPlayer(firstPlayerName: String, secondPlayerName: String, passant: String = "") {
+    if(winChecker(passant, false)) return
+    val matchTemplate = Regex("[a-h][1-8][a-h][1-8]")
+    println("$secondPlayerName's turn:")
+    val coordinates = readln()
+    val valid = (matchTemplate.matches(coordinates) && coordinates[0] == coordinates[2]) &&
+            ((coordinates[1] == '7' && coordinates[3] == '5') || coordinates[3].code == coordinates[1].code - 1) &&
+            f.valueOf(coordinates[2].toString() + coordinates[3].toString()).s == ' '
+    val capture = matchTemplate.matches(coordinates) && f.valueOf(coordinates[2].toString() + coordinates[3].toString()).s == 'W' &&
+            coordinates[1] - 1 == coordinates[3] && (coordinates[0] + 1 == coordinates[2] || coordinates[0] - 1 == coordinates[2])
+    when {
+        coordinates == "exit" -> {
+            println("Bye!")
+        }
+        matchTemplate.matches(coordinates) && f.valueOf(coordinates[0].toString() + coordinates[1].toString()).s != 'B' -> {
+            println("No black pawn at ${coordinates[0].toString() + coordinates[1].toString()}")
+            secondPlayer(firstPlayerName, secondPlayerName, passant)
+        }
+        capture -> {
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            f.valueOf(coordinates.substring(2, 4)).s = 'B'
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            printer()
+            firstPlayer(firstPlayerName, secondPlayerName)
+        }
+        passant.matches(matchTemplate) && passant[3] == coordinates[3] + 1 && passant[2] == coordinates[2]  &&
+                matchTemplate.matches(coordinates) && f.valueOf(coordinates[2].toString() + (coordinates[3] + 1).toString()).s == 'W' &&
+                coordinates[1] - 1 == coordinates[3]  && (coordinates[0] + 1 == coordinates[2] || coordinates[0] - 1 == coordinates[2]) -> {
+            f.valueOf(passant.substring(2, 4)).s = ' '
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            f.valueOf(coordinates.substring(2, 4)).s = 'B'
+            printer()
+            firstPlayer(firstPlayerName, secondPlayerName)
+        }
+        !valid -> {
+            println("Invalid Input")
+            secondPlayer(firstPlayerName, secondPlayerName, passant)
+        }
+        valid && coordinates[1].code > coordinates[3].code -> {
+            f.valueOf(coordinates.substring(0, 2)).s = ' '
+            f.valueOf(coordinates.substring(2, 4)).s = 'B'
+            printer()
+            if(coordinates[1] == '7' && coordinates[3] == '5') firstPlayer(firstPlayerName, secondPlayerName, coordinates)
+            else firstPlayer(firstPlayerName, secondPlayerName)
+        }
+    }
+}
